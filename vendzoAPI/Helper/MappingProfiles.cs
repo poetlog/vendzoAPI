@@ -9,6 +9,8 @@ namespace vendzoAPI.Helper
         {
             CreateMap<User, UserDTO>();
             CreateMap<UserDTO, User>();
+            CreateMap<Address, AddressDTO>();
+            CreateMap<AddressDTO, Address>();
         }
     }
 }

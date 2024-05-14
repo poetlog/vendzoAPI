@@ -56,11 +56,34 @@ namespace vendzoAPI.Repository
             return _context.Users.Any(p => p.Id == id);
         }
 
+        public bool AddAddressToUser(User user, Address address, bool saveFlag)
+        {
+            user.Addresses.Add(address);
+
+            if (user.CurrentAddress == null)
+            {
+                SetDefaultAddressOfUser(user, address,false);
+            }
+
+            if (saveFlag)
+                return Save();
+            return true;
+        }
+
+        public bool SetDefaultAddressOfUser(User user, Address address, bool saveFlag)
+        {
+            user.CurrentAddressNavigation = address;
+            user.CurrentAddress = address.Id;
+            if (saveFlag)
+                return Save();
+            return true;
+        }
+
         public bool Save()
         {
             var saved = _context.SaveChanges();
 
-            return saved > 0 ? true : false;
+            return saved > 0;
         }
     }
 }

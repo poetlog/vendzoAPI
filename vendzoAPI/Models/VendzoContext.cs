@@ -55,6 +55,12 @@ public partial class VendzoContext : DbContext
                 .HasMaxLength(36)
                 .IsUnicode(false)
                 .HasColumnName("userId");
+            entity.Property(e => e.IsDeleted)
+                .HasColumnName("IsDeleted")
+                .HasDefaultValue(false);
+            entity.Property(e => e.CreatedAt)
+                .HasColumnName("createdAt")
+                .HasDefaultValueSql("GETDATE()");
 
             entity.HasOne(d => d.User).WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.UserId)

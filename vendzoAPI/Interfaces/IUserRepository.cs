@@ -1,4 +1,6 @@
-﻿namespace vendzoAPI.Interfaces
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace vendzoAPI.Interfaces
 {
     public interface IUserRepository
     {
@@ -11,6 +13,8 @@
         bool CreateUser(User user);
         bool UpdateUser(User user);
         bool DeleteUser(User user);
+        public bool AddAddressToUser(User user, Address address, bool saveFlag);
+        public bool SetDefaultAddressOfUser(User user, Address address, bool saveFlag);
         bool Save();
         
     }

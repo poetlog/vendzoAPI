@@ -11,6 +11,7 @@ namespace vendzoAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly IAddressRepository _addressRepository;
         private readonly IMapper _mapper;
 
         public UserController(IUserRepository userRepository, IMapper mapper)
@@ -173,7 +174,7 @@ namespace vendzoAPI.Controllers
             return Ok("Success");
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("delete/hard")]
         public IActionResult DeleteUser(string userId)
         {
             if(userId == null || !_userRepository.UserExists(userId))
@@ -195,6 +196,69 @@ namespace vendzoAPI.Controllers
 
             return Ok("Success");
 
+        }
+        [HttpDelete("delete/soft")]
+        public IActionResult SoftDeleteUser(string userId)
+        {
+            if (userId == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = _userRepository.GetUserById(userId);
+            if (user == null)
+                return NotFound();
+
+            if (user.IsDeleted)
+            {
+                ModelState.AddModelError("", "User is already soft deleted.");
+                return StatusCode(500, ModelState);
+
+            }
+
+            user.IsDeleted = true;
+
+            if (!_userRepository.UpdateUser(user))
+            {
+                ModelState.AddModelError("", "Something went wrong with soft deleting the user :(");
+                return StatusCode(500, ModelState);
+
+            }
+            return Ok("Success");
+        }
+        [HttpPut("setDefaultAddress")]
+        public IActionResult SetDefaultAddress(string userId,string addressId)
+        {
+            if (userId == null || addressId == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = _userRepository.GetUserById(userId);
+            var address = _addressRepository.Get(addressId);
+            if (user == null || address == null)
+                return NotFound();
+
+            if (user.IsDeleted || address.IsDeleted)
+            {
+                ModelState.AddModelError("", "User or address is soft deleted.");
+                return StatusCode(500, ModelState);
+
+            }
+
+            if (!_userRepository.SetDefaultAddressOfUser(user,address,true))
+            {
+                ModelState.AddModelError("", "Something went wrong with seting default address of the user :(");
+                return StatusCode(500, ModelState);
+
+            }
+            return Ok("Success");
         }
     }
 }
