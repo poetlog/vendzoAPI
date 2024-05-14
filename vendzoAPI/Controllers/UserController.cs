@@ -161,8 +161,7 @@ namespace vendzoAPI.Controllers
             if (!string.IsNullOrWhiteSpace(userDTO.ContactNo))
                 userMap.ContactNo = userDTO.ContactNo;
 
-            if (!string.IsNullOrWhiteSpace(userDTO.UserType))
-                userMap.UserType = userDTO.UserType;
+                userMap.IsClient = userDTO.IsClient;
 
 
             if (!_userRepository.UpdateUser(userMap))

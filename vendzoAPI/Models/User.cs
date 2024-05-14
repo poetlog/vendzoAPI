@@ -21,8 +21,10 @@ public partial class User
 
     public string? ContactNo { get; set; }
 
-    public string? UserType { get; set; }
+    public bool IsClient { get; set; }
+
     public DateTime CreatedAt { get; set; }
+
     public bool IsDeleted { get; set; }
 
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();

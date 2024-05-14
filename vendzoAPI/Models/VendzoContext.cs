@@ -222,10 +222,15 @@ public partial class VendzoContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("pass");
-            entity.Property(e => e.UserType)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasColumnName("userType");
+            entity.Property(e => e.IsClient)
+                .HasColumnName("isClient")
+                .HasDefaultValue(false);
+            entity.Property(e => e.IsDeleted)
+                .HasColumnName("IsDeleted")
+                .HasDefaultValue(false);
+            entity.Property(e => e.CreatedAt)
+                .HasColumnName("createdAt")
+                .HasDefaultValueSql("GETDATE()");
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .IsUnicode(false)

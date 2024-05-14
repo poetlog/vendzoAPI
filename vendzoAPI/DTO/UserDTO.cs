@@ -14,7 +14,7 @@
 
         public string? ContactNo { get; set; }
 
-        public string? UserType { get; set; }
+        public bool IsClient { get; set; }
 
         public DateTime CreatedAt { get; set; }
 
