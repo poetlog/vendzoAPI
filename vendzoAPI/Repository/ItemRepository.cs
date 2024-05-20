@@ -4,44 +4,66 @@ namespace vendzoAPI.Repository
 {
     public class ItemRepository : IItemRepository
     {
+        private readonly VendzoContext _context;
+
+        public ItemRepository(VendzoContext context)
+        {
+            _context = context;
+        }
+
         public bool Add(Item item)
         {
-            throw new NotImplementedException();
+            _context.Add(item);
+            //TODO: add integration to user
+            return Save();
         }
 
         public bool Delete(Item item)
         {
-            throw new NotImplementedException();
+            _context.Remove(item);
+            //TODO: add integration to user
+            return Save();
         }
 
         public Item GetItem(string id)
         {
-            throw new NotImplementedException();
+            return _context.Items.Where(a => a.Id == id).FirstOrDefault();
         }
 
         public ICollection<Item> GetItems()
         {
-            throw new NotImplementedException();
+            return _context.Items.ToList();
         }
 
         public ICollection<Item> GetItemsOfCategory(string categoryName)
         {
-            throw new NotImplementedException();
+            return _context.Items.Where(a => a.Category == categoryName).ToList();
         }
 
         public ICollection<Item> GetItemsOfUser(string userId)
         {
-            throw new NotImplementedException();
+            //if(_context.Users.Where(a => a.UserId == userId).Any())
+                return _context.Items.Where(a => a.SellerId == userId).ToList();
+            //else return null
+        }
+
+        public bool ItemExists(string id)
+        {
+            return _context.Items.Where(a => a.Id == id).Any();
         }
 
         public bool Save()
         {
-            throw new NotImplementedException();
+            var saved = _context.SaveChanges();
+
+            return saved > 0;
         }
 
         public bool Update(Item item)
         {
-            throw new NotImplementedException();
+            _context.Update(item);
+            //TODO: add integration to user ?
+            return Save();
         }
     }
 }

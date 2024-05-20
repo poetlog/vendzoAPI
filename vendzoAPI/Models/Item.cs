@@ -24,6 +24,10 @@ public partial class Item
     public string? Photo { get; set; }
 
     public int? Stock { get; set; }
+    
+    public DateTime CreatedAt { get; set; }
+
+    public bool IsDeleted { get; set; }
 
     public virtual ICollection<Basket> Baskets { get; set; } = new List<Basket>();
 

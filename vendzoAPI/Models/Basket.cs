@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace vendzoAPI.Models;
 
 public partial class Basket
 {
-    public string Id { get; set; } = null!;
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public string Id { get; set; }
 
     public int? Quantity { get; set; }
 
@@ -16,4 +20,8 @@ public partial class Basket
     public virtual Item? Item { get; set; }
 
     public virtual User? User { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public bool IsDeleted { get; set; }
 }

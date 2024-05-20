@@ -6,6 +6,7 @@
         Item GetItem(string id);
         ICollection<Item> GetItemsOfUser(string userId);
         ICollection<Item> GetItemsOfCategory(string categoryName);
+        bool ItemExists(string id);
         bool Add(Item item);
         bool Update(Item item);
         bool Delete(Item item);

@@ -14,9 +14,10 @@ namespace vendzoAPI.Controllers
         private readonly IAddressRepository _addressRepository;
         private readonly IMapper _mapper;
 
-        public UserController(IUserRepository userRepository, IMapper mapper)
+        public UserController(IUserRepository userRepository, IMapper mapper, IAddressRepository addressRepository)
         {
             _userRepository = userRepository;
+            _addressRepository = addressRepository;
             _mapper = mapper;
         }
 
@@ -180,18 +181,22 @@ namespace vendzoAPI.Controllers
             if(userId == null || !_userRepository.UserExists(userId))
             { return NotFound(); }
 
-            var userToDelete = _userRepository.GetUserById(userId);
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var userToDelete = _userRepository.GetUserById(userId);
+
+            
+
             //TODO: Add relation validation (eg: user-orders, user-adresses)
 
-            userToDelete.IsDeleted = true;
+            //userToDelete.IsDeleted = true; //bu niye burda ???
 
-            if (!_userRepository.UpdateUser(userToDelete))
+            if (!_userRepository.DeleteUser(userToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong with the deletion of the user :(");
+                return StatusCode(500, ModelState);
+
             }
 
             return Ok("Success");
@@ -220,6 +225,9 @@ namespace vendzoAPI.Controllers
             }
 
             user.IsDeleted = true;
+
+            //TODO: Add relation validation (eg: user-orders, user-adresses)
+
 
             if (!_userRepository.UpdateUser(user))
             {

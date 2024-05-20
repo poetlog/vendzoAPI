@@ -42,7 +42,7 @@ namespace vendzoAPI.Repository
 
         public ICollection<Address> GetByUser(string userId)
         {
-            return _context.Addresses.Where(p => p.UserId == userId).ToList();
+            return _context.Addresses.Where(p => p.UserId == userId && p.IsDeleted == false ).ToList();
         }
 
         public bool Save()

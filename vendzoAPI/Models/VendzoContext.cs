@@ -87,6 +87,12 @@ public partial class VendzoContext : DbContext
                 .HasMaxLength(36)
                 .IsUnicode(false)
                 .HasColumnName("userId");
+            entity.Property(e => e.IsDeleted)
+                .HasColumnName("IsDeleted")
+                .HasDefaultValue(false);
+            entity.Property(e => e.CreatedAt)
+                .HasColumnName("createdAt")
+                .HasDefaultValueSql("GETDATE()");
 
             entity.HasOne(d => d.Item).WithMany(p => p.Baskets)
                 .HasForeignKey(d => d.ItemId)
@@ -132,6 +138,12 @@ public partial class VendzoContext : DbContext
                 .HasMaxLength(75)
                 .IsUnicode(false)
                 .HasColumnName("title");
+            entity.Property(e => e.IsDeleted)
+                .HasColumnName("IsDeleted")
+                .HasDefaultValue(false);
+            entity.Property(e => e.CreatedAt)
+                .HasColumnName("createdAt")
+                .HasDefaultValueSql("GETDATE()");
 
             entity.HasOne(d => d.Seller).WithMany(p => p.Items)
                 .HasForeignKey(d => d.SellerId)
@@ -200,6 +212,12 @@ public partial class VendzoContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("type");
+            entity.Property(e => e.IsDeleted)
+                .HasColumnName("IsDeleted")
+                .HasDefaultValue(false);
+            entity.Property(e => e.CreatedAt)
+                .HasColumnName("createdAt")
+                .HasDefaultValueSql("GETDATE()");
         });
 
         modelBuilder.Entity<User>(entity =>
