@@ -37,6 +37,8 @@ public partial class User
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
-    
+    public virtual ICollection<OrderEntry> SellerOrderEntries { get; set; } = new List<OrderEntry>();
+
+    public virtual ICollection<OrderEntry> BuyerOrderEntries { get; set; } = new List<OrderEntry>();
 
 }

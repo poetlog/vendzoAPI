@@ -31,5 +31,7 @@ public partial class Item
 
     public virtual ICollection<Basket> Baskets { get; set; } = new List<Basket>();
 
+    public virtual ICollection<OrderEntry> OrderEntries { get; set; } = new List<OrderEntry>();
+
     public virtual User? Seller { get; set; }
 }

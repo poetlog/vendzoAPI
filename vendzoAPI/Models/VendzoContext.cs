@@ -27,6 +27,9 @@ public partial class VendzoContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<OrderEntry> OrderEntries { get; set; }
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=.;Database=vendzo;Trusted_Connection=True;Encrypt=false;");
@@ -188,6 +191,94 @@ public partial class VendzoContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Order__userId__5AEE82B9");
+
+            entity.HasOne(d => d.Seller)
+                .WithMany(p => p.Orders)
+                .HasForeignKey(d => d.SellerId)
+                .HasConstraintName("FK_Orders_Seller");
+
+            entity.HasMany(d => d.OrderEntries)
+                .WithOne(p => p.Order)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("FK_Orders_OrderEntries");
+        });
+
+        modelBuilder.Entity<OrderEntry>(entity =>
+        {
+            entity.ToTable("orderEntry");
+
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(36)
+                .IsUnicode(false)
+                .HasColumnName("id");
+
+            entity.Property(e => e.OrderId)
+                .IsRequired()
+                .HasMaxLength(36)
+                .IsUnicode(false)
+                .HasColumnName("orderId");
+
+            entity.Property(e => e.BuyerId)
+                .IsRequired()
+                .HasMaxLength(36)
+                .IsUnicode(false)
+                .HasColumnName("buyerId");
+
+            entity.Property(e => e.ItemId)
+                .IsRequired()
+                .HasMaxLength(36)
+                .IsUnicode(false)
+                .HasColumnName("itemId");
+
+            entity.Property(e => e.SellerId)
+                .IsRequired()
+                .HasMaxLength(36)
+                .IsUnicode(false)
+                .HasColumnName("sellerId");
+
+            entity.Property(e => e.Photo)
+                .HasMaxLength(255)
+                .HasColumnName("photo");
+
+            entity.Property(e => e.Price)
+                .HasColumnType("decimal(10, 2)")
+                .IsRequired()
+                .HasColumnName("price");
+
+            entity.Property(e => e.Quantity)
+                .IsRequired()
+                .HasColumnName("quantity");
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .IsRequired()
+                .HasColumnName("createdAt");
+
+            entity.HasOne(d => d.Order)
+                .WithMany(p => p.OrderEntries)
+                .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_orderEntry_Order");
+
+            entity.HasOne(d => d.Buyer)
+                .WithMany(p => p.BuyerOrderEntries)
+                .HasForeignKey(d => d.BuyerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_orderEntry_Buyer");
+
+            entity.HasOne(d => d.Seller)
+                .WithMany(p => p.SellerOrderEntries)
+                .HasForeignKey(d => d.SellerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_orderEntry_Seller");
+
+            entity.HasOne(d => d.Item)
+                .WithMany(p => p.OrderEntries)
+                .HasForeignKey(d => d.ItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_orderEntry_Item");
         });
 
         modelBuilder.Entity<Promotion>(entity =>
