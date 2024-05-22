@@ -25,6 +25,10 @@ namespace vendzoAPI.Helper
             CreateMap<Order, OrderDTO>();
             CreateMap<OrderDTO, Order>();
 
+            CreateMap<OrderEntry, OrderEntryDTO>();
+            CreateMap<OrderEntryDTO, OrderEntry>();
+
+
         }
     }
 }
