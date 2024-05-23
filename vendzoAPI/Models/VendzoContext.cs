@@ -192,10 +192,10 @@ public partial class VendzoContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Order__userId__5AEE82B9");
 
-            entity.HasOne(d => d.Seller)
+            /*entity.HasOne(d => d.Seller)
                 .WithMany(p => p.Orders)
                 .HasForeignKey(d => d.SellerId)
-                .HasConstraintName("FK_Orders_Seller");
+                .HasConstraintName("FK_Orders_Seller");*/
 
             entity.HasMany(d => d.OrderEntries)
                 .WithOne(p => p.Order)

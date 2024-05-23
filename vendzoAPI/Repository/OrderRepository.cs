@@ -73,7 +73,8 @@ namespace vendzoAPI.Repository
 
         public ICollection<Order> GetOrdersOfSeller(string userId)
         {
-            return _context.Orders.Where(a => a.SellerId == userId).ToList();
+            //return _context.Orders.Where(a => a.SellerId == userId).ToList();
+            return null;
         }
 
         public bool OrderExists(string orderId)

@@ -58,7 +58,7 @@ namespace vendzoAPI.Controllers
             var order = _mapper.Map<Order>(orderDto);
             order.OrderDate = System.DateTime.Now;
             _userRepository.GetUserById(order.UserId).Orders.Add(order);
-            _userRepository.GetUserById(order.SellerId).Orders.Add(order);
+            //_userRepository.GetUserById(order.SellerId).Orders.Add(order);
 
             if (!_orderRepository.AddOrder(order))
             {
@@ -261,8 +261,8 @@ namespace vendzoAPI.Controllers
             if (!string.IsNullOrEmpty(orderDto.UserId))
                 order.UserId = orderDto.UserId;
 
-            if (!string.IsNullOrEmpty(orderDto.SellerId))
-                order.SellerId = orderDto.SellerId;
+            /*if (!string.IsNullOrEmpty(orderDto.SellerId))
+                order.SellerId = orderDto.SellerId;*/
 
             if (orderDto.OrderDate != null)
                 order.OrderDate = orderDto.OrderDate;

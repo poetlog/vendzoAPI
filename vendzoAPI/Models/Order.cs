@@ -13,7 +13,7 @@ public partial class Order
 
     public string? UserId { get; set; }
 
-    public string? SellerId { get; set; }
+    //public string? SellerId { get; set; }
 
     public DateTimeOffset? OrderDate { get; set; }
 
@@ -31,7 +31,7 @@ public partial class Order
 
     public virtual User? User { get; set; }
 
-    public virtual User? Seller { get; set; }
+    //public virtual User? Seller { get; set; }
 
     public virtual ICollection<OrderEntry> OrderEntries { get; set; } = new List<OrderEntry>();
 
