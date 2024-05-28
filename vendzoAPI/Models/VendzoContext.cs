@@ -170,6 +170,10 @@ public partial class VendzoContext : DbContext
                 .HasMaxLength(150)
                 .IsUnicode(false)
                 .HasColumnName("shipAddress");
+            entity.Property(e => e.BillAddress)
+                .HasMaxLength(150)
+                .IsUnicode(false)
+                .HasColumnName("BillAddress");
             entity.Property(e => e.ShipDate).HasColumnName("shipDate");
             entity.Property(e => e.Status)
                 .HasMaxLength(13)

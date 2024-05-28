@@ -23,6 +23,8 @@ public partial class Order
 
     public string? ShipAddress { get; set; }
 
+    public string? BillAddress { get; set; }
+
     public string? TrackingNo { get; set; }
 
     public string? Status { get; set; }

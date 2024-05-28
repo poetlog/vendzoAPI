@@ -2,7 +2,7 @@
 {
     public class OrderDTO
     {
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         public string? UserId { get; set; }
 
@@ -15,6 +15,8 @@
         public DateTimeOffset? DeliverDate { get; set; }
 
         public string? ShipAddress { get; set; }
+
+        public string? BillAddress { get; set; }
 
         public string? TrackingNo { get; set; }
 

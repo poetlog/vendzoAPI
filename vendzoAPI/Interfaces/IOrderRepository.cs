@@ -6,7 +6,7 @@
         ICollection<OrderEntry> GetAllEntries();
         Order GetOrder(string id);
         OrderEntry GetEntry(string id);
-        ICollection<Order> GetOrdersOfBuyer(string userId);
+        ICollection<Order> GetOrdersOfUser(string userId);
         ICollection<Order> GetOrdersOfSeller(string userId);
         ICollection<OrderEntry> GetEntriesOfOrder(string orderId);
         bool OrderExists(string orderId);

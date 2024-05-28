@@ -66,7 +66,7 @@ namespace vendzoAPI.Repository
             return _context.Orders.Where(a => a.Id == id).FirstOrDefault();
         }
 
-        public ICollection<Order> GetOrdersOfBuyer(string userId)
+        public ICollection<Order> GetOrdersOfUser(string userId)
         {
             return _context.Orders.Where(a => a.UserId == userId).ToList();
         }

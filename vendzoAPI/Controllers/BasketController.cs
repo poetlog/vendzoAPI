@@ -54,8 +54,8 @@ namespace vendzoAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            //if (basket == null)
-              //  return NotFound();
+            if (basket == null)
+                return NotFound();
 
             return Ok(basket);
         }
@@ -97,7 +97,7 @@ namespace vendzoAPI.Controllers
             if (!ModelState.IsValid || basketDTO == null || basketDTO.Id != basketId)
                 return BadRequest(ModelState);
 
-            if (_basketRepository.BasketExists(basketId))
+            if (!_basketRepository.BasketExists(basketId))
                 return NotFound();
 
             var basketMap = _basketRepository.GetBasket(basketId);

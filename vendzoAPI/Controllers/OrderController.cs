@@ -25,7 +25,7 @@ namespace vendzoAPI.Controllers
         [HttpGet("Orders/all")]
         public IActionResult GetAllOrders()
         {
-            var orders = _orderRepository.GetAllOrders();
+            var orders = _mapper.Map<List<OrderDTO>>(_orderRepository.GetAllOrders());
 
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -209,7 +209,7 @@ namespace vendzoAPI.Controllers
 
             return Ok(entries);
         }
-
+        /*
         [HttpGet("Orders/buyerId={userId}")]
         public IActionResult GetOrdersOfUser(string userId)
         {
@@ -238,6 +238,23 @@ namespace vendzoAPI.Controllers
             var orders = _mapper
                 .Map<ICollection<OrderDTO>>
                 (_orderRepository.GetOrdersOfSeller(userId));
+
+            return Ok(orders);
+        }
+        */
+
+        [HttpGet("Orders/userId={userId}")]
+        public IActionResult GetOrdersOfUser(string userId)
+        {
+            if (!_userRepository.UserExists(userId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var orders = _mapper
+                .Map<ICollection<OrderDTO>>
+                (_orderRepository.GetOrdersOfUser(userId));
 
             return Ok(orders);
         }
@@ -275,6 +292,9 @@ namespace vendzoAPI.Controllers
 
             if (!string.IsNullOrEmpty(orderDto.ShipAddress))
                 order.ShipAddress = orderDto.ShipAddress;
+
+            if (!string.IsNullOrEmpty(orderDto.BillAddress))
+                order.BillAddress = orderDto.BillAddress;
 
             if (!string.IsNullOrEmpty(orderDto.TrackingNo))
                 order.TrackingNo = orderDto.TrackingNo;
