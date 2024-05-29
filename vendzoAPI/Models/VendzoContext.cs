@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace vendzoAPI.Models;
 
-public partial class VendzoContext : DbContext
+public partial class VendzoContext : IdentityDbContext<ApplicationUser>
 {
+
     public VendzoContext()
     {
     }
@@ -36,6 +38,8 @@ public partial class VendzoContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Address>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Address__3213E83F29F4F205");
@@ -337,10 +341,10 @@ public partial class VendzoContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("email");
-            entity.Property(e => e.Pass)
+            entity.Property(e => e.LoginId)
                 .HasMaxLength(50)
                 .IsUnicode(false)
-                .HasColumnName("pass");
+                .HasColumnName("loginId");
             entity.Property(e => e.IsClient)
                 .HasColumnName("isClient")
                 .HasDefaultValue(false);
@@ -358,6 +362,7 @@ public partial class VendzoContext : DbContext
             entity.HasOne(d => d.CurrentAddressNavigation).WithMany(p => p.Users)
                 .HasForeignKey(d => d.CurrentAddress)
                 .HasConstraintName("FK_currentAddress");
+
         });
 
         OnModelCreatingPartial(modelBuilder);

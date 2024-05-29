@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using vendzoAPI.Models;
 
@@ -11,9 +12,11 @@ using vendzoAPI.Models;
 namespace vendzoAPI.Migrations
 {
     [DbContext(typeof(VendzoContext))]
-    partial class VendzoContextModelSnapshot : ModelSnapshot
+    [Migration("20240528082125_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -606,11 +609,11 @@ namespace vendzoAPI.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
-                    b.Property<string>("LoginId")
+                    b.Property<string>("Pass")
                         .HasMaxLength(50)
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)")
-                        .HasColumnName("loginId");
+                        .HasColumnName("pass");
 
                     b.Property<string>("Username")
                         .HasMaxLength(50)

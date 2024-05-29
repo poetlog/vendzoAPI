@@ -102,14 +102,6 @@ namespace vendzoAPI.Controllers
                 return StatusCode(422, ModelState);
             }
 
-            //check password
-
-            if (userDTO.Pass == null || userDTO.Pass.Length < 7)
-            {
-                ModelState.AddModelError("", "Weak password");
-                return StatusCode(422, ModelState);
-            }
-
             var userMap = _mapper.Map<User>(userDTO);
 
             userMap.CreatedAt = DateTime.Now;
@@ -150,9 +142,6 @@ namespace vendzoAPI.Controllers
             // Update only the provided fields
             if (!string.IsNullOrWhiteSpace(userDTO.Username))
                 userMap.Username = userDTO.Username;
-
-            if (!string.IsNullOrWhiteSpace(userDTO.Pass))
-                userMap.Pass = userDTO.Pass;
 
             if (!string.IsNullOrWhiteSpace(userDTO.Email))
                 userMap.Email = userDTO.Email;
