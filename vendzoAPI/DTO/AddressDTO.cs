@@ -6,6 +6,8 @@
 
         public string? UserId { get; set; }
 
+        public string? Title { get; set; }
+
         public string? ContactNo { get; set; }
 
         public string? Address1 { get; set; }

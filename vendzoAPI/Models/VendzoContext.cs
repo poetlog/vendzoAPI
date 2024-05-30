@@ -58,6 +58,10 @@ public partial class VendzoContext : IdentityDbContext<ApplicationUser>
                 .HasMaxLength(13)
                 .IsUnicode(false)
                 .HasColumnName("contactNo");
+            entity.Property(e => e.Title)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("title");
             entity.Property(e => e.UserId)
                 .HasMaxLength(36)
                 .IsUnicode(false)

@@ -118,6 +118,8 @@ namespace vendzoAPI.Controllers
             if (!string.IsNullOrWhiteSpace(addressDTO.ContactNo))
                 addressMap.ContactNo = addressDTO.ContactNo;
 
+            if (!string.IsNullOrWhiteSpace(addressDTO.Title))
+                addressMap.Title = addressDTO.Title;
 
             if (!_addressRepository.UpdateAddress(addressMap))
             {
