@@ -37,34 +37,39 @@ namespace vendzoAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDTO model)
         {
-            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
+            if(_userRepository.UserExistsByEmail(user.Email))
+            {
+                return BadRequest(new { Error = "Email already exists" });
+            }
             var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                var userMap = _mapper.Map<User>(model);
-
-                userMap.CreatedAt = DateTime.Now;
-                userMap.LoginId = user.Id;
-                userMap.Username = model.Username;
-
-                if (_userRepository.GetUserByUsername(model.Username) != null || !_userRepository.CreateUser(userMap))
-                    return BadRequest(result.Errors);
-
-                return Ok(new { Result = "Registration successful" });
+                return BadRequest(result.Errors);
             }
 
-            return BadRequest(result.Errors);
+            var userMap = _mapper.Map<User>(model);
+            userMap.CreatedAt = DateTime.Now;
+            userMap.LoginId = user.Id;
+            userMap.Username = model.Username;
+            userMap.IsClient = model.IsClient;
+
+            if ( !_userRepository.CreateUser(userMap))
+                return BadRequest("Could not create user.");
+            
+            return Ok(new { Result = "Registration successful" });
+
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
 
-            if (result.Succeeded && !_userRepository.GetUserByEmail(model.Email).IsDeleted)
+            if (result.Succeeded && !_userRepository.GetUserByUsername(model.Username).IsDeleted)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await _userManager.FindByNameAsync(model.Username);
                 var token = GenerateJwtToken(user);
 
                 return Ok(new { Token = token });

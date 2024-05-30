@@ -85,5 +85,10 @@ namespace vendzoAPI.Repository
 
             return saved > 0;
         }
+
+        public bool UserExistsByEmail(string email)
+        {
+            return _context.Users.Any(p => p.Email == email);
+        }
     }
 }

@@ -16,6 +16,6 @@ namespace vendzoAPI.Interfaces
         public bool AddAddressToUser(User user, Address address, bool saveFlag);
         public bool SetDefaultAddressOfUser(User user, Address address, bool saveFlag);
         bool Save();
-        
+        bool UserExistsByEmail(string email);
     }
 }
