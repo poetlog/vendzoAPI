@@ -67,12 +67,17 @@ namespace vendzoAPI.Controllers
         {
             var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
 
-            if (result.Succeeded && !_userRepository.GetUserByUsername(model.Username).IsDeleted)
+            if (result.Succeeded &&
+                _userRepository.GetUserByUsername(model.Username) != null &&
+                !_userRepository.GetUserByUsername(model.Username).IsDeleted)
             {
                 var user = await _userManager.FindByNameAsync(model.Username);
+                var userId = _userRepository.GetUserByUsername(model.Username).Id;
                 var token = GenerateJwtToken(user);
 
-                return Ok(new { Token = token });
+                return Ok(new { Token = token,
+                                UserId = userId
+                               });
             }
 
             return Unauthorized();
