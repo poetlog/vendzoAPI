@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using vendzoAPI.DTO;
 using vendzoAPI.Interfaces;
@@ -9,6 +10,8 @@ namespace vendzoAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;

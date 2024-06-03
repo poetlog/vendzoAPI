@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using vendzoAPI.DTO;
 using vendzoAPI.Interfaces;
@@ -8,6 +9,8 @@ namespace vendzoAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class PromotionController : ControllerBase
     {
         private readonly IPromotionRepository _promotionRepository;
