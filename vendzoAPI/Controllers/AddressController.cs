@@ -135,7 +135,7 @@ namespace vendzoAPI.Controllers
                 return StatusCode(500, ModelState);
 
             }
-            return Ok("Success");
+            return Ok();
         }
 
         [HttpDelete("delete/hard")]
@@ -158,7 +158,7 @@ namespace vendzoAPI.Controllers
                 ModelState.AddModelError("", "Something went wrong with the deletion of the address :(");
             }
 
-            return Ok("Success");
+            return Ok();
 
         }
         [HttpDelete("delete/soft")]
@@ -191,7 +191,7 @@ namespace vendzoAPI.Controllers
                 return StatusCode(500, ModelState);
 
             }
-            return Ok("Success");
+            return Ok();
         }
 
     }
