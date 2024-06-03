@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using vendzoAPI.DTO;
 using vendzoAPI.Interfaces;
+using vendzoAPI.Models;
 
 namespace vendzoAPI.Controllers
 {
@@ -14,12 +16,14 @@ namespace vendzoAPI.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IAddressRepository _addressRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
 
-        public UserController(IUserRepository userRepository, IMapper mapper, IAddressRepository addressRepository)
+        public UserController(IUserRepository userRepository, IAddressRepository addressRepository, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _userRepository = userRepository;
             _addressRepository = addressRepository;
+            _userManager = userManager;
             _mapper = mapper;
         }
 
@@ -119,7 +123,7 @@ namespace vendzoAPI.Controllers
         }
 
         [HttpPut("update")]
-        public IActionResult UpdateUser(string userId, [FromBody] UserDTO userDTO)
+        public async Task<IActionResult> UpdateUser(string userId, [FromBody] UserDTO userDTO)
         {
             if (userDTO == null)
             {
@@ -141,12 +145,55 @@ namespace vendzoAPI.Controllers
                 return NotFound();
             }
 
+            if (!string.IsNullOrWhiteSpace(userDTO.Username) && 
+                _userRepository.UserExistsByUsername(userDTO.Username) && 
+                _userRepository.GetUserByUsername(userDTO.Username).Id != userMap.Id )
+            {
+                ModelState.AddModelError("", "Username already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!string.IsNullOrWhiteSpace(userDTO.Email) &&
+                _userRepository.GetUserByEmail(userDTO.Email) != null &&
+                _userRepository.GetUserByEmail(userDTO.Email).Id != userMap.Id )
+            {
+                ModelState.AddModelError("", "Email already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            
+
+            var userIdentity = await _userManager.FindByIdAsync(userMap.LoginId);
+            if (userIdentity == null)
+            {
+                return NotFound("User not found");
+            }
+
             // Update only the provided fields
-            if (!string.IsNullOrWhiteSpace(userDTO.Username))
+            if (!string.IsNullOrWhiteSpace(userDTO.Username) && userDTO.Username != userMap.Username)
+            {
                 userMap.Username = userDTO.Username;
 
-            if (!string.IsNullOrWhiteSpace(userDTO.Email))
+                // Update username
+                var setUserNameResult = await _userManager.SetUserNameAsync(userIdentity, userDTO.Username);
+                if (!setUserNameResult.Succeeded)
+                {
+                    return BadRequest(setUserNameResult.Errors);
+                }
+            }
+            
+
+            if (!string.IsNullOrWhiteSpace(userDTO.Email) && userDTO.Email != userMap.Email)
+            {
                 userMap.Email = userDTO.Email;
+
+                var setEmailResult = await _userManager.SetEmailAsync(userIdentity, userDTO.Email);
+                if (!setEmailResult.Succeeded)
+                {
+                    return BadRequest(setEmailResult.Errors);
+                }
+            }
+                
 
             if (!string.IsNullOrWhiteSpace(userDTO.CurrentAddress))
                 userMap.CurrentAddress = userDTO.CurrentAddress;
@@ -163,7 +210,7 @@ namespace vendzoAPI.Controllers
                 return StatusCode(500, ModelState);
 
             }
-            return Ok("Success");
+            return Ok();
         }
 
         [HttpDelete("delete/hard")]
@@ -176,8 +223,6 @@ namespace vendzoAPI.Controllers
                 return BadRequest(ModelState);
 
             var userToDelete = _userRepository.GetUserById(userId);
-
-            
 
             //TODO: Add relation validation (eg: user-orders, user-adresses)
 

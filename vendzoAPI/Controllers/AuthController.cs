@@ -83,6 +83,26 @@ namespace vendzoAPI.Controllers
             return Unauthorized();
         }
 
+        [HttpPut("changePassword/userId={userId}")]
+        public async Task<IActionResult> ChangePassword(string userId, [FromBody] ChangePasswordDTO model)
+        {
+            var user = await _userManager.FindByIdAsync(_userRepository.GetUserById(userId).LoginId);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            if (!changePasswordResult.Succeeded)
+            {
+                return BadRequest(changePasswordResult.Errors);
+            }
+
+            return Ok(new { Result = "Password change successful" });
+        }
+
+
+
         private string GenerateJwtToken(ApplicationUser user)
         {
             var claims = new[]
@@ -98,10 +118,12 @@ namespace vendzoAPI.Controllers
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Issuer"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddMinutes(300),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+
     }
 }

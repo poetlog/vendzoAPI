@@ -77,12 +77,17 @@ namespace vendzoAPI.Controllers
             addressMap.User = user;
             _userRepository.AddAddressToUser(user, addressMap,false);
 
+            if (addressDTO.SetAsDefault)
+            {
+                _userRepository.SetDefaultAddressOfUser(user, addressMap, false);
+            }
+
             if (!_addressRepository.CreateAddress(addressMap))
             {
                 ModelState.AddModelError("", "Something went wrong with creating the address :(");
                 return StatusCode(500, ModelState);
             }
-            return Ok("Success");
+            return Ok();
         }
 
         [HttpPut("update")]

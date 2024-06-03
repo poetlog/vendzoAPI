@@ -11,5 +11,7 @@
         public string? ContactNo { get; set; }
 
         public string? Address1 { get; set; }
+
+        public bool SetAsDefault { get; set; }
     }
 }

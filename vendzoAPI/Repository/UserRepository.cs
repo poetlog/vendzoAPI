@@ -90,5 +90,10 @@ namespace vendzoAPI.Repository
         {
             return _context.Users.Any(p => p.Email == email);
         }
+
+        public bool UserExistsByUsername(string username)
+        {
+            return _context.Users.Any(p => p.Username == username);
+        }
     }
 }
