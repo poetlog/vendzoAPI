@@ -9,7 +9,6 @@ namespace vendzoAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
 
     public class ItemController : ControllerBase
     {
@@ -78,6 +77,7 @@ namespace vendzoAPI.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize]
         public IActionResult CreateItem([FromBody] ItemDTO itemDTO)
         {
             if (itemDTO == null || !ModelState.IsValid)
@@ -99,6 +99,7 @@ namespace vendzoAPI.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize]
         public IActionResult UpdateItem(string itemId, [FromBody] ItemDTO itemDTO)
         {
             if (itemDTO == null || !ModelState.IsValid || itemId != itemDTO.Id)
@@ -161,6 +162,8 @@ namespace vendzoAPI.Controllers
         }
 
         [HttpDelete("delete/hard")]
+        [Authorize]
+
         public IActionResult DeleteItem(string id)
         {
             if (string.IsNullOrEmpty(id) || !_itemRepository.ItemExists(id))
@@ -185,6 +188,8 @@ namespace vendzoAPI.Controllers
         }
 
         [HttpDelete("delete/soft")]
+        [Authorize]
+
         public IActionResult SoftDeleteItem(string id)
         {
             if (string.IsNullOrEmpty(id) || !_itemRepository.ItemExists(id))
