@@ -43,7 +43,7 @@ namespace vendzoAPI.Repository
         public ICollection<Item> GetItemsOfUser(string userId)
         {
             //if(_context.Users.Where(a => a.UserId == userId).Any())
-                return _context.Items.Where(a => a.SellerId == userId).ToList();
+                return _context.Items.Where(a => a.SellerId == userId && a.IsDeleted == false).ToList();
             //else return null
         }
 

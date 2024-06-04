@@ -95,14 +95,14 @@ namespace vendzoAPI.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Success");
+            return Ok();
         }
 
         [HttpPut("update")]
         public IActionResult UpdateItem(string itemId, [FromBody] ItemDTO itemDTO)
         {
             if (itemDTO == null || !ModelState.IsValid || itemId != itemDTO.Id)
-                return BadRequest(ModelState);
+                return BadRequest("Error ln105");
 
             if (!_itemRepository.ItemExists(itemId))
                 return NotFound();
@@ -157,7 +157,7 @@ namespace vendzoAPI.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Success");
+            return Ok();
         }
 
         [HttpDelete("delete/hard")]
@@ -181,7 +181,7 @@ namespace vendzoAPI.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Success");
+            return Ok();
         }
 
         [HttpDelete("delete/soft")]
@@ -215,7 +215,7 @@ namespace vendzoAPI.Controllers
                 return StatusCode(500, ModelState);
 
             }
-            return Ok("Success");
+            return Ok();
         }
 
     }
