@@ -5,6 +5,7 @@ namespace vendzoAPI.Repository
     public class ItemRepository : IItemRepository
     {
         private readonly VendzoContext _context;
+        private readonly int _pageSize = 10;
 
         public ItemRepository(VendzoContext context)
         {
@@ -25,6 +26,21 @@ namespace vendzoAPI.Repository
             return Save();
         }
 
+        public ICollection<Item> FilterItems(string category, int page)
+        {
+            return _context.Items.Where(a => a.Category == category).Skip((page - 1) * _pageSize).Take(_pageSize).ToList();
+        }
+
+        public ICollection<Item> GetFeaturedItems()
+        {
+            var random = new Random(0);
+            return _context.Items
+                .AsEnumerable()
+                .OrderBy(item => random.Next())
+                .Take(20)
+                .ToList();
+        }
+
         public Item GetItem(string id)
         {
             return _context.Items.Where(a => a.Id == id).FirstOrDefault();
@@ -33,6 +49,11 @@ namespace vendzoAPI.Repository
         public ICollection<Item> GetItems()
         {
             return _context.Items.ToList();
+        }
+
+        public int GetItemsCount()
+        {
+            return _context.Items.Count();
         }
 
         public ICollection<Item> GetItemsOfCategory(string categoryName)
@@ -47,6 +68,11 @@ namespace vendzoAPI.Repository
             //else return null
         }
 
+        public ICollection<Item> GetItemsPagination(int page)
+        {
+            return _context.Items.Skip((page - 1) * _pageSize).Take(_pageSize).ToList();
+        }
+
         public bool ItemExists(string id)
         {
             return _context.Items.Where(a => a.Id == id).Any();
@@ -57,6 +83,28 @@ namespace vendzoAPI.Repository
             var saved = _context.SaveChanges();
 
             return saved > 0;
+        }
+
+        public ICollection<Item> SearchItems(string searchTerm, int page)
+        {
+            return _context.Items.Where(a => a.Title.Contains(searchTerm) || a.Description.Contains(searchTerm)).Skip((page - 1) * _pageSize).Take(_pageSize).ToList(); ;
+            
+        }
+
+        public ICollection<Item> SortItems(string sortTerm, int page)
+        {
+            if(sortTerm == "priceAsc")
+                return _context.Items.OrderBy(a => a.Price).Skip((page - 1) * _pageSize).Take(_pageSize).ToList();
+            else if(sortTerm == "priceDesc")
+                return _context.Items.OrderByDescending(a => a.Price).Skip((page - 1) * _pageSize).Take(_pageSize).ToList();
+            else if(sortTerm == "title")
+                return _context.Items.OrderBy(a => a.Title).Skip((page - 1) * _pageSize).Take(_pageSize).ToList();
+            else if(sortTerm == "dateAsc")
+                return _context.Items.OrderBy(a => a.CreatedAt).Skip((page - 1) * _pageSize).Take(_pageSize).ToList();
+            else if(sortTerm == "dateDesc")
+                return _context.Items.OrderByDescending(a => a.CreatedAt).Skip((page - 1) * _pageSize).Take(_pageSize).ToList();
+            else return null;
+           
         }
 
         public bool Update(Item item)

@@ -34,6 +34,71 @@ namespace vendzoAPI.Controllers
             return Ok(items);
         }
 
+        [HttpGet("all/page={page}")]
+        public IActionResult GetItems(int page) {
+            var items = _mapper.Map<List<ItemDTO>>(_itemRepository.GetItemsPagination(page));
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            return Ok(items);
+        }
+
+        [HttpGet("search/{searchTerm}/page={page}")]
+        public IActionResult SearchItems(string searchTerm, int page)
+        {
+            var items = _mapper.Map<List<ItemDTO>>(_itemRepository.SearchItems(searchTerm, page));
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            return Ok(items);
+        }
+
+        [HttpGet("filter/{category}/page={page}")]
+        public IActionResult FilterItems(string category, int page)
+        {
+            var items = _mapper.Map<List<ItemDTO>>(_itemRepository.FilterItems(category, page));
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            return Ok(items);
+        }
+
+        [HttpGet("sort/{sortTerm}/page={page}")]
+        public IActionResult SortItems(string sortTerm, int page)
+        {
+            var items = _mapper.Map<List<ItemDTO>>(_itemRepository.SortItems(sortTerm, page));
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            return Ok(items);
+        }
+
+        [HttpGet("count")]
+        public IActionResult GetItemsCount()
+        {
+            var count = _itemRepository.GetItemsCount();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            return Ok(count);
+        }
+
+        [HttpGet("featured")]
+        public IActionResult GetFeaturedItems()
+        {
+            var items = _mapper.Map<List<ItemDTO>>(_itemRepository.GetFeaturedItems());
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            return Ok(items);
+        }
+
         [HttpGet("find/id={id}")]
         public IActionResult GetItem(string id) 
         {
