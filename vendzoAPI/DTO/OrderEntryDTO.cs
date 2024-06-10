@@ -11,8 +11,9 @@ namespace vendzoAPI.DTO
         public string? ItemId { get; set; }
         public string? SellerId { get; set; }
         public string? Photo { get; set; }
+        public string? ItemTitle { get; set; }
+        public string? SellerName { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

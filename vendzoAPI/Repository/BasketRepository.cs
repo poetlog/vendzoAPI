@@ -1,4 +1,6 @@
-﻿using vendzoAPI.Interfaces;
+﻿using AutoMapper;
+using vendzoAPI.DTO;
+using vendzoAPI.Interfaces;
 using vendzoAPI.Models;
 
 namespace vendzoAPI.Repository
@@ -6,10 +8,12 @@ namespace vendzoAPI.Repository
     public class BasketRepository : IBasketRepository
     {
         private readonly VendzoContext _context;
+        private readonly IMapper _mapper;
 
-        public BasketRepository(VendzoContext context)
+        public BasketRepository(VendzoContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public bool Add(Basket basket)
@@ -48,7 +52,36 @@ namespace vendzoAPI.Repository
 
         public ICollection<Basket> GetBasketOfUser(string userId)
         {
-            return _context.Baskets.Where(a => a.UserId == userId).ToList();
+            return _context.Baskets.Where(a => a.UserId == userId && a.IsDeleted == false).ToList();
+        }
+
+        public ICollection<BasketDetailsDTO> GetBasketDetailsOfUser(string userId)
+        {
+            var baskets = _mapper.Map<List<BasketDetailsDTO>>(
+                _context.Baskets
+                .Where(a => a.UserId == userId && a.IsDeleted == false)
+                .ToList()
+            );
+
+            baskets = baskets.Select(basket =>
+            {
+                if (basket.ItemId == null)
+                {
+                    return basket;
+                }
+                var item = _context.Items.Where(a=> a.Id == basket.ItemId).FirstOrDefault();
+                if (item != null)
+                {
+                    basket.ItemName = item.Title;
+                    basket.ItemStock = item.Stock;
+                    basket.ItemPrice = item.Price * basket.Quantity;
+                }
+                else basket.ItemName = basket.ItemId;
+                return basket;
+            }).ToList();
+
+            return baskets;
+
         }
 
         public bool Save()
@@ -61,6 +94,15 @@ namespace vendzoAPI.Repository
         public bool Update(Basket basket)
         {
             _context.Update(basket);
+            return Save();
+        }
+
+        public bool ClearBasketOfUser(string userId)
+        {
+            _context.Baskets
+                .Where(a => a.UserId == userId)
+                .ToList()
+                .ForEach(a => a.IsDeleted = true);
             return Save();
         }
     }

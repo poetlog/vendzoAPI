@@ -21,7 +21,30 @@ namespace vendzoAPI.Repository
         public bool AddOrder(Order order)
         {
             _context.Add(order);
-            return Save();
+            if (!Save())
+                return false;
+
+            var basketItems = _context.Baskets.Where(a => a.UserId == order.UserId && a.IsDeleted == false).ToList();
+
+            foreach (var basket in basketItems)
+            {
+                var item = _context.Items.Where(a => a.Id == basket.ItemId).FirstOrDefault();
+                var orderEntry = new OrderEntry
+                {
+                    OrderId = order.Id,
+                    ItemId = basket.ItemId,
+                    Quantity = (int)basket.Quantity,
+                    Price = (decimal)item.Price,
+                    BuyerId = order.UserId,
+                    SellerId = item.SellerId,
+                    Photo = item.Photo,
+                    CreatedAt = DateTime.Now,
+                    ItemTitle = item.Title,
+                    SellerName = _context.Users.Where(a => a.Id == item.SellerId).Select(a => a.Username).FirstOrDefault(),
+                };
+                AddEntry(orderEntry);
+            }
+            return true;
         }
 
         public bool DeleteEntry(OrderEntry entry)

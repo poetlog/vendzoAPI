@@ -250,6 +250,18 @@ public partial class VendzoContext : IdentityDbContext<ApplicationUser>
                 .IsUnicode(false)
                 .HasColumnName("sellerId");
 
+            entity.Property(e => e.ItemTitle)
+                .IsRequired()
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("itemTitle");
+
+            entity.Property(e => e.SellerName)
+                .IsRequired()
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("sellerName");
+
             entity.Property(e => e.Photo)
                 .HasMaxLength(255)
                 .HasColumnName("photo");

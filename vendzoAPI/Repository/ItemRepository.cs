@@ -5,7 +5,7 @@ namespace vendzoAPI.Repository
     public class ItemRepository : IItemRepository
     {
         private readonly VendzoContext _context;
-        private readonly int _pageSize = 10;
+        private readonly int _pageSize = 9;
 
         public ItemRepository(VendzoContext context)
         {
@@ -73,6 +73,12 @@ namespace vendzoAPI.Repository
             return _context.Items.Skip((page - 1) * _pageSize).Take(_pageSize).ToList();
         }
 
+        public string GetSellerOfItem(string itemId)
+        {
+            string sellerId = _context.Items.Where(a => a.Id == itemId).Select(a => a.SellerId).FirstOrDefault();
+            return _context.Users.Where(a => a.Id == sellerId).Select(a => a.Username).FirstOrDefault();
+        }
+
         public bool ItemExists(string id)
         {
             return _context.Items.Where(a => a.Id == id).Any();
@@ -110,6 +116,22 @@ namespace vendzoAPI.Repository
         public bool Update(Item item)
         {
             _context.Update(item);
+
+            // Get all baskets
+            var baskets = _context.Baskets.Where(a => a.Id == item.Id).ToList();
+            if(baskets != null)
+            {
+                // Loop through each basket
+                foreach (var basket in baskets)
+                {
+                    // Set isDeleted to 1
+                    basket.IsDeleted = true;
+
+                    // Update the basket
+                    _context.Update(basket);
+                }
+            }
+                
             //TODO: add integration to user ?
             return Save();
         }

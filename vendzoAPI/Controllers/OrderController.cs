@@ -63,13 +63,13 @@ namespace vendzoAPI.Controllers
             _userRepository.GetUserById(order.UserId).Orders.Add(order);
             //_userRepository.GetUserById(order.SellerId).Orders.Add(order);
 
-            if (!_orderRepository.AddOrder(order))
+            if ( !_orderRepository.AddOrder(order))
             {
                 ModelState.AddModelError("Error", "Failed to add order");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Success");
+            return Ok();
         }
 
         [HttpDelete("Orders/delete/hard")]
@@ -345,6 +345,12 @@ namespace vendzoAPI.Controllers
 
             if (!string.IsNullOrEmpty(entryDto.SellerId))
                 entry.SellerId = entryDto.SellerId;
+
+            if (!string.IsNullOrEmpty(entryDto.ItemTitle))
+                entry.ItemTitle = entryDto.ItemTitle;
+
+            if (!string.IsNullOrEmpty(entryDto.SellerName))
+                entry.SellerName = entryDto.SellerName;
 
             if (!string.IsNullOrEmpty(entryDto.Photo))
                 entry.Photo = entryDto.Photo;

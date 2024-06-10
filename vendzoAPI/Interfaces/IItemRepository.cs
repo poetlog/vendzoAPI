@@ -11,6 +11,7 @@
         Item GetItem(string id);
         ICollection<Item> GetItemsOfUser(string userId);
         ICollection<Item> GetItemsOfCategory(string categoryName);
+        string GetSellerOfItem(string itemId);
         int GetItemsCount();
         bool ItemExists(string id);
         bool Add(Item item);

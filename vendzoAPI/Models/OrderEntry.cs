@@ -27,6 +27,12 @@ namespace vendzoAPI.Models
         public string Photo { get; set; }
 
         [Required]
+        public string ItemTitle { get; set; }
+
+        [Required]
+        public string SellerName { get; set; }
+
+        [Required]
         public decimal Price { get; set; }
 
         [Required]

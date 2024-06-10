@@ -141,6 +141,20 @@ namespace vendzoAPI.Controllers
             return Ok(items);
         }
 
+        [HttpGet("find/seller/itemId={itemId}")]
+        public IActionResult GetSellerOfItem(string itemId)
+        {
+            if (!_itemRepository.ItemExists(itemId))
+                return NotFound();
+
+            string seller = _itemRepository.GetSellerOfItem(itemId);
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            return Ok(new { username = seller });
+        }
+
         [HttpPost("create")]
         [Authorize]
         public IActionResult CreateItem([FromBody] ItemDTO itemDTO)
@@ -228,7 +242,6 @@ namespace vendzoAPI.Controllers
 
         [HttpDelete("delete/hard")]
         [Authorize]
-
         public IActionResult DeleteItem(string id)
         {
             if (string.IsNullOrEmpty(id) || !_itemRepository.ItemExists(id))

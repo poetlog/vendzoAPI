@@ -18,7 +18,11 @@ namespace vendzoAPI.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public BasketController(IBasketRepository basketRepository, IUserRepository userRepository, IMapper mapper)
+        public BasketController(
+            IBasketRepository basketRepository, 
+            IUserRepository userRepository, 
+            IMapper mapper 
+            )
         {
             _basketRepository = basketRepository;
             _userRepository = userRepository;
@@ -66,7 +70,10 @@ namespace vendzoAPI.Controllers
         [HttpGet("user/{userId}")]
         public IActionResult GetBasketOfUser(string userId)
         {
-            var baskets = _mapper.Map<List<BasketDTO>>(_basketRepository.GetBasketOfUser(userId));
+            var baskets = _mapper.Map<List<BasketDetailsDTO>>(_basketRepository.GetBasketDetailsOfUser(userId));
+
+            if(baskets == null)
+                return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -80,6 +87,12 @@ namespace vendzoAPI.Controllers
             if (basketDTO == null || !ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            if(_basketRepository.GetBasket(basketDTO.UserId, basketDTO.ItemId) != null && _basketRepository.GetBasket(basketDTO.UserId, basketDTO.ItemId).IsDeleted == false)
+            {
+                ModelState.AddModelError("", "Basket already exists.");
+                return StatusCode(500, ModelState);
+            }
+
             var basketMap = _mapper.Map<Basket>(basketDTO);
             basketMap.CreatedAt = DateTime.Now;
             _userRepository.GetUserById(basketDTO.UserId).Baskets.Add(basketMap);
@@ -90,7 +103,7 @@ namespace vendzoAPI.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Success");
+            return Ok();
 
         }
 
@@ -128,8 +141,28 @@ namespace vendzoAPI.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Success");
+            return Ok();
         }
+
+        [HttpPut("update/quantity/basketId={basketId}&quantity={quantity}")]
+        public IActionResult UpdateBasketQuantity(string basketId, int quantity)
+        {
+            var basket = _basketRepository.GetBasket(basketId);
+
+            if (basket == null)
+                return NotFound();
+
+            basket.Quantity = quantity;
+
+            if (!_basketRepository.Update(basket))
+            {
+                ModelState.AddModelError("", "Something went wrong with updating the basket :(");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok();
+        }
+
 
         [HttpDelete("delete/hard")]
         public IActionResult DeleteBasket(string basketId) 
@@ -147,7 +180,7 @@ namespace vendzoAPI.Controllers
                 ModelState.AddModelError("", "Something went wrong with the deletion of the basket :(");
                 return StatusCode(500, ModelState);
             }
-            return Ok("Success");
+            return Ok();
         }
 
         [HttpDelete("delete/soft")]
@@ -181,7 +214,26 @@ namespace vendzoAPI.Controllers
                 return StatusCode(500, ModelState);
 
             }
-            return Ok("Success");
+            return Ok();
         }
+
+        [HttpDelete("clear/user/{userId}")]
+        public IActionResult ClearBasketOfUser(string userId)
+        {
+            if (string.IsNullOrEmpty(userId) || !_userRepository.UserExists(userId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_basketRepository.ClearBasketOfUser(userId))
+            {
+                ModelState.AddModelError("", "Something went wrong with clearing the basket :(");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok();
+        }
+
     }
 }

@@ -18,6 +18,7 @@ namespace vendzoAPI.Helper
 
             CreateMap<Basket, BasketDTO>();
             CreateMap<BasketDTO, Basket>();
+            CreateMap<Basket, BasketDetailsDTO>();
 
             CreateMap<Promotion, PromotionDTO>();
             CreateMap<PromotionDTO, Promotion>();

@@ -9,7 +9,6 @@ namespace vendzoAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
 
     public class PromotionController : ControllerBase
     {
@@ -85,7 +84,7 @@ namespace vendzoAPI.Controllers
             if (_promotionRepository.CheckIsValid(code))
                 return Ok(promo);
 
-            return Ok("Expired");
+            return BadRequest("Expired");
         }
 
         [HttpPost("create")]
