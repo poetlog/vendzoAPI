@@ -34,12 +34,14 @@ namespace vendzoAPI.Repository
                     OrderId = order.Id,
                     ItemId = basket.ItemId,
                     Quantity = (int)basket.Quantity,
-                    Price = (decimal)item.Price,
+                    Price = (decimal)item.Price * (int)basket.Quantity,
                     BuyerId = order.UserId,
                     SellerId = item.SellerId,
                     Photo = item.Photo,
                     CreatedAt = DateTime.Now,
                     ItemTitle = item.Title,
+                    Status = "Yeni Sipariş",
+                    TrackingNo = "TR" + basket.ItemId.Substring(33) + DateTime.Now.ToString("mmss") + order.Id.Substring(33) + item.SellerId.Substring(33) + "-" + order.UserId.Substring(33),
                     SellerName = _context.Users.Where(a => a.Id == item.SellerId).Select(a => a.Username).FirstOrDefault(),
                 };
                 AddEntry(orderEntry);
@@ -91,7 +93,7 @@ namespace vendzoAPI.Repository
 
         public ICollection<Order> GetOrdersOfUser(string userId)
         {
-            return _context.Orders.Where(a => a.UserId == userId).ToList();
+            return _context.Orders.Where(a => a.UserId == userId).OrderByDescending(a=> a.OrderDate).ToList();
         }
 
         public ICollection<Order> GetOrdersOfSeller(string userId)
@@ -121,6 +123,11 @@ namespace vendzoAPI.Repository
         {
             _context.Update(order);
             return Save();
+        }
+
+        public ICollection<OrderEntry> GetEntriesOfSeller(string userId)
+        {
+            return _context.OrderEntries.Where(a=> a.SellerId == userId).OrderByDescending(a=> a.CreatedAt).ToList();
         }
     }
 }

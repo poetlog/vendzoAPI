@@ -38,6 +38,11 @@ namespace vendzoAPI.Models
         [Required]
         public int Quantity { get; set; }
 
+        public string? TrackingNo { get; set; }
+
+        [Required]
+        public string? Status { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [ForeignKey(nameof(OrderId))]

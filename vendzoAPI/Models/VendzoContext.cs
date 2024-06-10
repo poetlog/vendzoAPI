@@ -183,17 +183,11 @@ public partial class VendzoContext : IdentityDbContext<ApplicationUser>
                 .IsUnicode(false)
                 .HasColumnName("BillAddress");
             entity.Property(e => e.ShipDate).HasColumnName("shipDate");
-            entity.Property(e => e.Status)
-                .HasMaxLength(13)
-                .IsUnicode(false)
-                .HasColumnName("status");
+
             entity.Property(e => e.Total)
                 .HasColumnType("numeric(9, 2)")
                 .HasColumnName("total");
-            entity.Property(e => e.TrackingNo)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("trackingNo");
+
             entity.Property(e => e.UserId)
                 .HasMaxLength(36)
                 .IsUnicode(false)
@@ -270,6 +264,15 @@ public partial class VendzoContext : IdentityDbContext<ApplicationUser>
                 .HasColumnType("decimal(10, 2)")
                 .IsRequired()
                 .HasColumnName("price");
+
+            entity.Property(e => e.TrackingNo)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("trackingNo");
+            entity.Property(e => e.Status)
+                .HasMaxLength(13)
+                .IsUnicode(false)
+                .HasColumnName("status");
 
             entity.Property(e => e.Quantity)
                 .IsRequired()

@@ -25,10 +25,6 @@ public partial class Order
 
     public string? BillAddress { get; set; }
 
-    public string? TrackingNo { get; set; }
-
-    public string? Status { get; set; }
-
     public decimal? Total { get; set; }
 
     public virtual User? User { get; set; }

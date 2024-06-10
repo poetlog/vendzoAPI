@@ -14,6 +14,10 @@ namespace vendzoAPI.DTO
         public string? ItemTitle { get; set; }
         public string? SellerName { get; set; }
         public decimal Price { get; set; }
+        public string? TrackingNo { get; set; }
+        public string? Status { get; set; }
         public int Quantity { get; set; }
+        public DateTime CreatedAt { get; set; }
+
     }
 }

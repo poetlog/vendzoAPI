@@ -18,10 +18,6 @@
 
         public string? BillAddress { get; set; }
 
-        public string? TrackingNo { get; set; }
-
-        public string? Status { get; set; }
-
         public decimal? Total { get; set; }
     }
 }

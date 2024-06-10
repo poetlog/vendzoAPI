@@ -9,6 +9,7 @@
         ICollection<Order> GetOrdersOfUser(string userId);
         ICollection<Order> GetOrdersOfSeller(string userId);
         ICollection<OrderEntry> GetEntriesOfOrder(string orderId);
+        ICollection<OrderEntry> GetEntriesOfSeller(string userId);
         bool OrderExists(string orderId);
         bool EntryExists(string entryId);
         bool AddOrder(Order order);

@@ -94,7 +94,7 @@ namespace vendzoAPI.Controllers
 
             return Ok("Success");
         }
-
+        /*
         [HttpDelete("Orders/delete/soft")]
         public IActionResult SoftDeleteOrder(string id)
         {
@@ -123,7 +123,7 @@ namespace vendzoAPI.Controllers
             }
 
             return Ok("Success");
-        }
+        }*/
 
         [HttpGet("OrderEntries/all")]
         public IActionResult GetAllEntries()
@@ -212,6 +212,20 @@ namespace vendzoAPI.Controllers
 
             return Ok(entries);
         }
+
+        [HttpGet("OrderEntries/userId={userId}")]
+        public IActionResult GetEntriesOfSeller(string userId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var entries = _mapper
+                .Map<ICollection<OrderEntryDTO>>
+                (_orderRepository.GetEntriesOfSeller(userId));
+
+            return Ok(entries);
+        }
+
         /*
         [HttpGet("Orders/buyerId={userId}")]
         public IActionResult GetOrdersOfUser(string userId)
@@ -299,12 +313,6 @@ namespace vendzoAPI.Controllers
             if (!string.IsNullOrEmpty(orderDto.BillAddress))
                 order.BillAddress = orderDto.BillAddress;
 
-            if (!string.IsNullOrEmpty(orderDto.TrackingNo))
-                order.TrackingNo = orderDto.TrackingNo;
-
-            if (!string.IsNullOrEmpty(orderDto.Status))
-                order.Status = orderDto.Status;
-
             if (orderDto.Total != null && orderDto.Total != 0)
                 order.Total = orderDto.Total;
 
@@ -355,6 +363,12 @@ namespace vendzoAPI.Controllers
             if (!string.IsNullOrEmpty(entryDto.Photo))
                 entry.Photo = entryDto.Photo;
 
+            if (!string.IsNullOrEmpty(entryDto.TrackingNo))
+                entry.TrackingNo = entryDto.TrackingNo;
+
+            if (!string.IsNullOrEmpty(entryDto.Status))
+                entry.Status = entryDto.Status;
+
             if (entryDto.Price != null || entryDto.Price != 0)
                 entry.Price = entryDto.Price;
 
@@ -368,6 +382,29 @@ namespace vendzoAPI.Controllers
             }
 
             return Ok("Success");
+        }
+
+        [HttpPut("OrderEntries/updateStatus/id={entryId}&status={status}")]
+        public IActionResult UpdateEntry(string entryId, string status)
+        {
+            if (entryId == null || !ModelState.IsValid || status == null)
+                return BadRequest(ModelState);
+
+            if (!_orderRepository.EntryExists(entryId))
+                return NotFound();
+
+            var entry = _orderRepository.GetEntry(entryId);
+            if (entry == null)
+                return NotFound();
+            entry.Status = status;
+
+            if (!_orderRepository.UpdateEntry(entry))
+            {
+                ModelState.AddModelError("Error", "Failed to update order entry");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok();
         }
     }
 }
